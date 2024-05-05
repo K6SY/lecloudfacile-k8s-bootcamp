@@ -1,0 +1,15 @@
+services:
+  nginx-reverse-proxy:
+    container_name: proxy
+    image: nginx
+    networks:
+      - mynetwork
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d
+    restart: always
+    ports:
+      - '80:80'
+networks:
+  mynetwork:
+    name: mynetwork
+    external: true
