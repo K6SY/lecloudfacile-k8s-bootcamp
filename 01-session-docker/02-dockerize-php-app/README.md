@@ -9,7 +9,7 @@ docker buildx build -t phpapp .
 ## Execution du container
 
 ```
-docker run --name myawesome-php-app -d -p 8086:8000 phpapp
+docker run --name myawesome-php-app -d -p 8086:80 phpapp
 ```
 Accéder au browser et vérifier: http://0.0.0.0:8086/ 
 

@@ -1,28 +1,26 @@
-# Dockerization d'une application statique Flask
+# Executer d'une application monolithique 3-tiers avec compose
 
-## Création de l'image
-
-```
-docker buildx build -t flaskapp .
-```
-
-## Execution du container
+## Démarrage des services
 
 ```
-docker run --name myawesome-flask-app -d -p 8085:8000 flaskapp
+docker compose up -d
 ```
 
-## Vérification de l'état du container
+## Vérification des containers
 
 ```
-docker ps -a -f name=myawesome-flask-app
+docker ps
 ```
 
-## Affichage des logs en mode streaming
+## Vérification des accès
+
+- Pour l'application, entrer l'url http://0.0.0.0:8000
+
+- Pour la base de données, entrer l'url http://0.0.0.0:8008 et vérifier que l'interface de phpmyadmin est bien accessible.
+
+
+# Arrêt des services
 
 ```
-docker logs myawesome-flask-app -f
+docker compose down
 ```
-
-
-

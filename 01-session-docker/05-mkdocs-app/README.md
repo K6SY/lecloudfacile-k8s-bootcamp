@@ -22,15 +22,15 @@ mkdocs new kubernetes-training
 
 #### Executer votre projet
 ```
+cp Dockerfile kubernetes-training/
 cd kubernetes-training
-mkdocs run
+mkdocs serve
 ```
 Accéder au browser et vérifier: http://0.0.0.0:8000/ 
 
 #### Dockerizer la documentation
 
 ```
-cp ../Dockerfile .
 docker buildx build -t doc-app .
 ```
 

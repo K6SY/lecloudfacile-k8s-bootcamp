@@ -14,7 +14,6 @@ services:
       - database-environment
     volumes:
       - ./app:/var/www/html/
-      - ./sql:/docker-entrypoint-initdb.d/:ro
     ports:
       - 8000:80
   database-environment:
@@ -28,6 +27,8 @@ services:
         MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
         - "9906:3306"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d/:ro
   phpmyadmin:
     image: phpmyadmin:5.2.0-apache
     ports:
