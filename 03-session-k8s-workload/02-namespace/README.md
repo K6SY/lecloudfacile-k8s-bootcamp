@@ -1,5 +1,3 @@
-# Workload Management
-
 ## Namespace
 
 ####  Namespace basique
