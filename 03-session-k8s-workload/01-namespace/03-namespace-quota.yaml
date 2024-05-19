@@ -1,0 +1,15 @@
+#Quota define number of pod that can run on namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: k8s-lcf-quota
+
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: quota-pods
+  namespace: k8s-lcf-quota
+spec:
+  hard:
+    pods: "1"
