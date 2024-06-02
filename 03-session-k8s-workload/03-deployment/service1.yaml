@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lcf-svc-front
+  labels:
+    app: my-awesome-app
+    team: cohorte-mai
+    entity: lcf 
+spec:
+  selector:
+    app: lcf
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 32500

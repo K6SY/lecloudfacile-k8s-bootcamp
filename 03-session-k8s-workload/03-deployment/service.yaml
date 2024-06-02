@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lcf-svc-front
+  labels:
+    app: my-awesome-app
+    team: cohorte-mai
+    entity: lcf 
+spec:
+  selector:
+    app: lcf
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
