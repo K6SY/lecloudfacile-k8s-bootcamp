@@ -1,0 +1,150 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: jenkins-admin
+  namespace: lcf-k8s-devops
+  labels:
+    app: jenkins
+    criticity: high
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: jenkins-admin-clusterrole
+  labels:
+    app: jenkins
+    criticity: high
+rules:
+  - apiGroups: [""]
+    resources: ["*"]
+    verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: jenkins-admin-clusterrolebinding
+  labels:
+    app: jenkins
+    criticity: high
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: jenkins-admin-clusterrole
+subjects:
+- kind: ServiceAccount
+  name: jenkins-admin
+  namespace: lcf-k8s-devops
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-jenkins
+  namespace: lcf-k8s-devops
+spec:
+  storageClassName: "hostpath"
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+  namespace: lcf-k8s-devops
+  labels:
+    app: jenkins
+    criticity: high
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins-server
+  template:
+    metadata:
+      labels:
+        app: jenkins-server
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+      serviceAccountName: jenkins-admin
+      containers:
+        - name: jenkins
+          image: jenkins/jenkins:lts-jdk21
+          resources:
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+            requests:
+              memory: "500Mi"
+              cpu: "500m"
+          ports:
+            - name: httpport
+              containerPort: 8080
+            - name: jnlpport
+              containerPort: 50000
+          livenessProbe:
+            httpGet:
+              path: "/login"
+              port: 8080
+            initialDelaySeconds: 90
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: "/login"
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          volumeMounts:
+            - name: jenkins-data
+              mountPath: /var/jenkins_home
+      volumes:
+        - name: jenkins-data
+          persistentVolumeClaim:
+              claimName: pvc-jenkins
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-service-jnlp
+  namespace: lcf-k8s-devops
+  labels:
+    app: jenkins
+    criticity: high
+spec:
+  selector:
+    app: jenkins-server
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: jenkins-http-interne
+    - port: 50000
+      targetPort: 50000
+      name: jenkins-jnlp
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-service-http
+  namespace: lcf-k8s-devops
+  labels:
+    app: jenkins
+    criticity: high
+spec:
+  selector:
+    app: jenkins-server
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 32000
+      name: jenkins-url

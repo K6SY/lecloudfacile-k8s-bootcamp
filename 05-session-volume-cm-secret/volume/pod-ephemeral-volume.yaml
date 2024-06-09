@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ephemere
+spec:
+  containers:
+  - name: test-ephemere
+    image: alpine:latest
+    command: ['sh', '-c', 'while true; do echo "log at $(date)" >> /opt/app/logs.txt; sleep 1; done']
+    volumeMounts:
+    - name: vol-ephemere
+      mountPath: /opt/app
+  volumes:
+  - name: vol-ephemere
+    emptyDir: {}
