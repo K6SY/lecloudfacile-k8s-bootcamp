@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: pvc-sonar-extensions
-  namespace: lcf-k8s-devops
+  namespace: discovery
 spec:
   storageClassName: "hostpath"
   accessModes:
