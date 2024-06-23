@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonar-service
+  namespace: lcf-k8s-devops
+  labels:
+    app: sonarqube
+spec:
+  selector:
+    app: sonarqube
+  type: ClusterIP
+  ports:
+    - port: 9000
+      targetPort: 9000
+      name: sonar-port
